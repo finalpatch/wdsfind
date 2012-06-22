@@ -15,7 +15,7 @@ let queryWDS term =
 [<DllImport("kernel32.dll")>]
 extern bool SetConsoleOutputCP(uint32 wCodePageID);
 
-[<EntryPointAttribute>]
+[<EntryPoint>]
 let main args =
     SetConsoleOutputCP 65001u |> ignore
     if (Array.length args) >= 1 then
