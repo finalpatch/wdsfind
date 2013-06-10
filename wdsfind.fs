@@ -5,8 +5,9 @@ open System.Runtime.InteropServices
 let queryWDS term =
     let conn = new OleDbConnection("Provider=Search.CollatorDSO.1;Extended Propertes=\"Application=Windows\"")
     do conn.Open()
-    let q = sprintf "SELECT Top 100 System.ItemPathDisplay FROM \
-                     SYSTEMINDEX WHERE FREETEXT('%s')" term
+    // "System.ItemNameDisplay LIKE '%%%s%%'"
+    let q = sprintf "SELECT Top 100 System.ItemPathDisplay FROM SYSTEMINDEX
+                     WHERE FREETEXT('%s')" term
     let cmd = new OleDbCommand(q, conn)
     cmd.ExecuteReader()
     |> Seq.cast<IDataRecord>
@@ -19,7 +20,7 @@ extern bool SetConsoleOutputCP(uint32 wCodePageID);
 let main args =
     SetConsoleOutputCP 65001u |> ignore
     if (Array.length args) >= 1 then
-        queryWDS args.[0]
+        queryWDS (String.concat " " args)
         |> Seq.map (fun s -> s.Replace("\\", "/"))
         |> Seq.iter (printfn "%s")
     else
