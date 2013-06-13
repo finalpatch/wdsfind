@@ -5,9 +5,9 @@ open System.Runtime.InteropServices
 let queryWDS term =
     let conn = new OleDbConnection("Provider=Search.CollatorDSO.1;Extended Propertes=\"Application=Windows\"")
     do conn.Open()
-    // "System.ItemNameDisplay LIKE '%%%s%%'"
     let q = sprintf "SELECT Top 100 System.ItemPathDisplay FROM SYSTEMINDEX
-                     WHERE FREETEXT('%s')" term
+                     WHERE FREETEXT('%s') OR
+                     System.ItemNameDisplay LIKE '%%%s%%'" term term
     let cmd = new OleDbCommand(q, conn)
     cmd.ExecuteReader()
     |> Seq.cast<IDataRecord>
